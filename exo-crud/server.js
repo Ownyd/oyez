@@ -25,6 +25,8 @@ mongoClient.connect(mongoURL, function(err, db) {
 	});
 });
 
+
+
 /* API */ //TODO : Rajouter timeout sur les api
 app.get("/api/create", function(req, res){
 	mongoClient.connect(mongoURL, function(err, db) {
@@ -33,7 +35,7 @@ app.get("/api/create", function(req, res){
 		var myobj = { userId: req.query.userID, string: req.query.string };
 		dbo.collection("strings").insertOne(myobj, function(err, res) {
 			if (err) throw err;
-			console.log("Added the record "+req.query.string+"for user N."+req.query.userID+".');
+			console.log("Added the record "+req.query.string+"for user N."+req.query.userID+".");
 			db.close();
 		});
 	});
@@ -52,6 +54,19 @@ app.get("/api/delete", function(req, res){
 	});
 });
 
+app.get("/api/list", function(req, res){
+	mongoClient.connect(mongoURL, function(err, db) {
+		if (err) throw err;
+		var dbo = db.db("oyez");
+		var myobj = { userId: req.query.userID, string: req.query.string };
+		dbo.collection("strings").find().toArray(function(err, items) {
+			if (err) throw err;
+			db.close();
+			res.send(items);
+		});
+	});
+});
+
 /* 404 */
 
 app.use(function(req, res, next){
@@ -59,4 +74,4 @@ app.use(function(req, res, next){
 	res.status(404).send('Page introuvable !');
 })
 
-.listen(8080);
+.listen(8090);
