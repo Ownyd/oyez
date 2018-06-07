@@ -53,7 +53,7 @@ app.get("/api/delete", function(req, res){
 			db.close();
 		});
 	});
-	res.json({state : "ok"})
+	setTimeout(function(){res.json({state : "ok"});}, 2000);
 });
 
 app.get("/api/list", function(req, res){
@@ -65,7 +65,6 @@ app.get("/api/list", function(req, res){
 			if (err) throw err;
 			db.close();
 			setTimeout(function (){res.send(items);}, 2000);
-		
 		});
 	});
 });
