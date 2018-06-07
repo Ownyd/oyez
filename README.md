@@ -8,8 +8,12 @@ To run :
 
 ```npm start``` In the 3 different folders
 
+
 --> REST Api hosted on http://localhost:8090/
+
 --> GRAPHQL Api hosted on http://localhost:8080/
+
 --> React server hosted on http://localhost:3000/
+
 
 Enjoy !
