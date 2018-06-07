@@ -13,6 +13,9 @@ const resolveFunctions = {
     addString(_, {string, userId}){
       return AllStrings.addString(string, userId);
     },
+    delString(_, {_id}){
+      return AllStrings.delString(_id);
+    },
   }
  }
 

@@ -13,19 +13,54 @@ class App extends Component {
 
   showList()
   {
+
+    function delString(stringId)
+    {
+      if(document.getElementById(stringId) !== null)
+      {
+      var element = document.getElementById(stringId);
+      element.parentNode.removeChild(element);
+      }
+      client.mutate({
+      variables: { _id: stringId },
+      mutation:  gql`mutation delStringMutation($_id : String!)
+      {
+        delString(_id: $_id)
+      }`,
+    })
+  }
+    
+
     function addString(userId, string)
     {
-
+      var stringInput = document.getElementById("stringInput");
+      var currentDiv = document.getElementById("listWrapper");
+      var newDiv = document.createElement("div");
+      newDiv.innerHTML = stringInput.value;
+      currentDiv.insertBefore(newDiv, currentDiv.nextSibling);         
+      
       client.mutate({
         variables: { userId: userId, string: string },
         mutation: gql`mutation addStringMutation($userId: Int!, $string : String!)
         {
           addString(userId: $userId, string: $string)
+          {
+            _id
+            userId
+            string
+          }
         }
         `,        
-      })
+      }).then(result => {
+        newDiv.id = result.data.addString[0]._id;
+        newDiv.addEventListener('click', (event) => {
+            delString(newDiv.id);
+        });
+      });    
     }
   
+    /* Clean Wrapper to avoid duplicate list */
+
     if(document.getElementById("listWrapper") !== null)
     {
     var element = document.getElementById("listWrapper");
@@ -37,7 +72,7 @@ class App extends Component {
     var currentDiv = document.getElementById("listContainer"); 
     currentDiv.insertBefore(newDiv, currentDiv.nextSibling);
 
-
+    /* Read query to fill list */
 
     var userId = document.getElementById("userIdForm").value;
     const query = gql`query searchStringsByUserQuery($userId:Int!)
@@ -52,7 +87,8 @@ class App extends Component {
 {
       var newInput = document.createElement("input");
       newInput.type = "text";
-      newInput.id ="inputId";
+      newInput.id ="stringInput";
+      newInput.placeholder="Ajoutez des Strings";
       var currentDiv = document.getElementById("listWrapper"); 
       currentDiv.insertBefore(newInput, currentDiv.nextSibling);
 
@@ -60,11 +96,14 @@ class App extends Component {
         if (event.keyCode === 13)
           addString(userId, newInput.value);
       });
-
+    /* List filling */
       result.data.searchStringsByUser.forEach(element => {
       var newDiv = document.createElement("div");
       newDiv.innerHTML = element.string;
       newDiv.id = element._id;
+      newDiv.addEventListener('click', (event) => {
+        delString(newDiv.id);
+      });
       var currentDiv = document.getElementById("listWrapper");
       currentDiv.insertBefore(newDiv, currentDiv.nextSibling);         
         })

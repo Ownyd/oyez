@@ -14,7 +14,8 @@ type RootQuery {
 }
 
 type RootMutation {
-  addString(string: String!, userId : Int!) : String
+  addString(string: String!, userId : Int!) : [ObjString]
+  delString(_id: String) : String
 }
 
 schema {

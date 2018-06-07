@@ -4,6 +4,7 @@ var express = require('express');
 var app = express();
 var mongoClient = require("mongodb").MongoClient;
 var mongoURL = "mongodb://localhost/oyez";
+var ObjectId = require('mongodb').ObjectID;
 
 /* DB Creation */
 
@@ -27,32 +28,32 @@ mongoClient.connect(mongoURL, function(err, db) {
 
 
 
-/* API */ //TODO : Rajouter timeout sur les api
+/* API */
 app.get("/api/create", function(req, res){
 	mongoClient.connect(mongoURL, function(err, db) {
 		if (err) throw err;
 		var dbo = db.db("oyez");
 		var myobj = { userId: req.query.userID, string: req.query.string };
-		dbo.collection("strings").insertOne(myobj, function(err, res) {
-			if (err) res.json({state: "ko"});
+		dbo.collection("strings").insertOne(myobj, function(err, result) {
+			if (err) throw err;
 			console.log("Added the record "+req.query.string+"for user N."+req.query.userID+".");
 			db.close();
+			setTimeout(function (){res.send(result.ops);}, 2000);
 		});
 	});
-	res.json({state: "ok"});
 });
 
 app.get("/api/delete", function(req, res){
 	mongoClient.connect(mongoURL, function(err, db) {
 		if (err) throw err;
 		var dbo = db.db("oyez");
-		var myobj = { userId: req.query.userID, string: req.query.string };
-		dbo.collection("strings").removeOne(myobj, function(err, res) {
+		dbo.collection("strings").remove({ _id: ObjectId(req.query.stringId) }, function(err, result) {
 			if (err) throw err;
-			console.log("Removed the record "+req.query.string+"for user N."+req.query.userID+".");
+			console.log("Removed the record n."+req.query.stringId);
 			db.close();
 		});
 	});
+	res.json({state : "ok"})
 });
 
 app.get("/api/list", function(req, res){

@@ -21,6 +21,13 @@ const AllStrings = {
     return rp('http://localhost:8090/api/create?userID='+userId+'&string='+string)
       .then((res) => JSON.parse(res))
       .then((res) => {
+        return (res);
+      });
+  },
+  delString(_id){
+    return rp('http://localhost:8090/api/delete?stringId='+_id)
+      .then((res) => JSON.parse(res))
+      .then((res) => {
         return (res.state);
       });
   },
