@@ -17,6 +17,13 @@ const AllStrings = {
         return (res.filter(str => str.userId == userId));
       });
   },
+  addString(string, userId){
+    return rp('http://localhost:8090/api/create?userID='+userId+'&string='+string)
+      .then((res) => JSON.parse(res))
+      .then((res) => {
+        return (res.state);
+      });
+  },
 };
 
 export { AllStrings };

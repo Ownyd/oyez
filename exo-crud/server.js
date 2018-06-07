@@ -34,11 +34,12 @@ app.get("/api/create", function(req, res){
 		var dbo = db.db("oyez");
 		var myobj = { userId: req.query.userID, string: req.query.string };
 		dbo.collection("strings").insertOne(myobj, function(err, res) {
-			if (err) throw err;
+			if (err) res.json({state: "ko"});
 			console.log("Added the record "+req.query.string+"for user N."+req.query.userID+".");
 			db.close();
 		});
 	});
+	res.json({state: "ok"});
 });
 
 app.get("/api/delete", function(req, res){
@@ -62,7 +63,8 @@ app.get("/api/list", function(req, res){
 		dbo.collection("strings").find().toArray(function(err, items) {
 			if (err) throw err;
 			db.close();
-			res.send(items);
+			setTimeout(function (){res.send(items);}, 2000);
+		
 		});
 	});
 });

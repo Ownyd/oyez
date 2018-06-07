@@ -9,6 +9,11 @@ const resolveFunctions = {
       return AllStrings.getStringsByUser(userId);
     },
   },
+  RootMutation: {
+    addString(_, {string, userId}){
+      return AllStrings.addString(string, userId);
+    },
+  }
  }
 
 export default resolveFunctions;

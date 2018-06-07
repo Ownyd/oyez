@@ -8,14 +8,18 @@ type ObjString {
   string : String
 }
 
-
 type RootQuery {
   allStrings: [ObjString]
   searchStringsByUser (userId : Int!) : [ObjString]
 }
 
+type RootMutation {
+  addString(string: String!, userId : Int!) : String
+}
+
 schema {
   query: RootQuery
+  mutation: RootMutation
 }
 `;
 
